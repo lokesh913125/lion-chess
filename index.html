@@ -695,16 +695,14 @@ body.zen { background: #1a1816; }
       <div class="card-desc">Install Lion Chess on your device</div>
     </div>
   </div>
+
   <!-- ===== ADSTERRA NATIVE BANNER (Home Page) ===== -->
-<div style="margin: 30px auto; max-width: 1100px; padding: 0 20px;">
+  <div style="margin: 30px auto; max-width: 1100px; padding: 0 20px;">
+    <script async="async" data-cfasync="false" src="https://pl29153109.profitablecpmratenetwork.com/9bf3d3fc25a5d922df533193782a8c30/invoke.js"></script>
+    <div id="container-9bf3d3fc25a5d922df533193782a8c30"></div>
+  </div>
 
-<script async="async" data-cfasync="false" src="https://pl29153109.profitablecpmratenetwork.com/9bf3d3fc25a5d922df533193782a8c30/invoke.js"></script>
-<div id="container-9bf3d3fc25a5d922df533193782a8c30"></div>
-
-
-</div>
-
- <div class="stats-bar">
+  <div class="stats-bar">
     <div class="stat-item"><div class="stat-value" id="statWins">0</div><div class="stat-label">Wins</div></div>
     <div class="stat-item"><div class="stat-value" id="statLosses">0</div><div class="stat-label">Losses</div></div>
     <div class="stat-item"><div class="stat-value" id="statDraws">0</div><div class="stat-label">Draws</div></div>
@@ -859,8 +857,8 @@ body.zen { background: #1a1816; }
     <p id="gameOverMsg"></p>
     <div class="modal-btns">
       <button class="btn" onclick="closeModal('modalGameOver');setTimeout(generateReview,200);" id="reviewGameBtn">📊 Game Review</button>
-      <button class="btn secondary" onclick="closeModal('modalGameOver');newGame()">🔄 New Game</button>
-      <button class="btn secondary" onclick="closeModal('modalGameOver');showScreen('home')">🏠 Home</button>
+      <button class="btn secondary" onclick="closeModal('modalGameOver');newGame();">🔄 New Game</button>
+      <button class="btn secondary" onclick="closeModal('modalGameOver');setTimeout(function(){showScreen('home')},100);">🏠 Home</button>
     </div>
   </div>
 </div>
@@ -911,6 +909,20 @@ body.zen { background: #1a1816; }
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ===== ADSTERRA BANNER 728x90 ===== -->
+<div style="text-align:center; margin: 30px auto; max-width: 728px; min-height: 90px; padding: 10px;">
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '94153875576df1dd601aeb81cad849fb',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="https://www.highperformanceformat.com/94153875576df1dd601aeb81cad849fb/invoke.js"></script>
+</div>
 
 <div class="footer">
   Developer: <strong>Lokesh</strong> · Built with ❤️ · Lion Chess 🦁 v1.0
@@ -1521,6 +1533,7 @@ function setTheme(key) {
 function showScreen(name) {
   if (name === 'home') {
     stopClock();
+    // Close any open modals
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
   }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1951,6 +1964,8 @@ function generateReview() {
     return;
   }
   toast('Analyzing your game... 🔍');
+  
+  // Use setTimeout to avoid blocking UI
   setTimeout(() => {
     try {
       const reviewData = [];
@@ -1958,25 +1973,32 @@ function generateReview() {
       let humanMoves = 0;
       let totalLoss = 0;
       const counts = { brilliant: 0, best: 0, good: 0, inaccuracy: 0, mistake: 0, blunder: 0 };
+
       for (let i = 0; i < state.moveHistory.length; i++) {
         const played = state.moveHistory[i].move;
         const playerColor = chess.turn;
         const isHumanMove = state.mode === 'friend' || playerColor === state.humanColor;
+        
         const legal = chess.genLegalMoves();
         if (legal.length === 0) break;
+        
         let bestScore = -Infinity;
         let playedScore = -Infinity;
         let foundPlayed = false;
+        
         for (const m of legal) {
           chess.makeMove(m);
           const score = -quickEval(chess, 2);
           chess.unmakeMove();
           if (score > bestScore) bestScore = score;
-          if (m.from === played.from && m.to === played.to && ((!m.promo && !played.promo) || m.promo === played.promo)) {
+          if (m.from === played.from && m.to === played.to && 
+              ((!m.promo && !played.promo) || m.promo === played.promo)) {
             playedScore = score;
             foundPlayed = true;
           }
         }
+        
+        // If played move not found in legal moves, try matching by SAN
         if (!foundPlayed) {
           const san = state.moveHistory[i].san;
           for (const m of legal) {
@@ -1985,6 +2007,7 @@ function generateReview() {
               playedScore = -quickEval(chess, 2);
               chess.unmakeMove();
               foundPlayed = true;
+              // Update played reference for makeMove below
               played.from = m.from;
               played.to = m.to;
               played.promo = m.promo;
@@ -1992,7 +2015,9 @@ function generateReview() {
             }
           }
         }
-        if (!foundPlayed) playedScore = bestScore - 100;
+        
+        if (!foundPlayed) playedScore = bestScore - 100; // fallback
+        
         const loss = Math.max(0, bestScore - playedScore);
         let tag = 'good';
         if (loss <= 10) tag = 'best';
@@ -2000,14 +2025,36 @@ function generateReview() {
         else if (loss <= 90) tag = 'inaccuracy';
         else if (loss <= 200) tag = 'mistake';
         else tag = 'blunder';
-        if (isHumanMove) { humanMoves++; totalLoss += loss; counts[tag]++; }
-        reviewData.push({ num: Math.floor(i/2)+1, side: playerColor, san: state.moveHistory[i].san, tag, loss: Math.round(loss), isHuman: isHumanMove });
-        const replayMove = legal.find(m => m.from === played.from && m.to === played.to && ((!m.promo && !played.promo) || m.promo === played.promo));
+
+        if (isHumanMove) {
+          humanMoves++;
+          totalLoss += loss;
+          counts[tag]++;
+        }
+
+        reviewData.push({
+          num: Math.floor(i / 2) + 1,
+          side: playerColor,
+          san: state.moveHistory[i].san,
+          tag,
+          loss: Math.round(loss),
+          isHuman: isHumanMove
+        });
+
+        // Replay the move on review chess instance
+        const replayMove = legal.find(m => 
+          m.from === played.from && m.to === played.to &&
+          ((!m.promo && !played.promo) || m.promo === played.promo)
+        );
         if (replayMove) chess.makeMove(replayMove);
-        else break;
+        else break; // safety: stop if we can't replay
       }
+
+      // Accuracy calculation
       const avgLoss = humanMoves ? totalLoss / humanMoves : 0;
       const accuracy = Math.max(0, Math.min(100, 103 * Math.exp(-0.04 * avgLoss) - 3));
+
+      // Populate UI
       document.getElementById('revAccuracy').textContent = accuracy.toFixed(1) + '%';
       document.getElementById('revBrill').textContent = counts.brilliant;
       document.getElementById('revBest').textContent = counts.best;
@@ -2015,107 +2062,44 @@ function generateReview() {
       document.getElementById('revInacc').textContent = counts.inaccuracy;
       document.getElementById('revMist').textContent = counts.mistake;
       document.getElementById('revBlund').textContent = counts.blunder;
+
+      // Coach feedback
       let feedback = '';
-      if (accuracy >= 90) feedback = '🔥 Outstanding game! Grandmaster-level precision!';
-      else if (accuracy >= 80) feedback = '💪 Solid play! A few small inaccuracies to polish.';
-      else if (accuracy >= 70) feedback = '👍 Decent game but missed some tactical opportunities.';
-      else if (accuracy >= 55) feedback = '📚 Room to grow. Watch for blunders and king safety.';
-      else feedback = '🎯 Keep practicing! Focus on not losing material.';
+      if (accuracy >= 90) feedback = '🔥 Outstanding game! Grandmaster-level precision. Keep this up!';
+      else if (accuracy >= 80) feedback = '💪 Solid play! You made strong moves throughout. A few small inaccuracies to polish.';
+      else if (accuracy >= 70) feedback = '👍 Decent game. You played well but missed some tactical opportunities.';
+      else if (accuracy >= 55) feedback = '📚 Room to grow. Watch for blunders — check king safety and piece tactics.';
+      else feedback = '🎯 Keep practicing! Focus on not losing material and watching opponent threats.';
+      
       if (counts.blunder >= 3) feedback += ' Too many blunders — try slowing down.';
       if (counts.best >= 10) feedback += ' Your best-move count is impressive! 🌟';
+      
       document.getElementById('revFeedback').textContent = feedback;
+
+      // Move list
       const mList = document.getElementById('revMovesList');
       mList.innerHTML = '';
       reviewData.forEach((r) => {
         const row = document.createElement('div');
         row.className = 'rm-row';
-        const tagClass = 'tag-' + (r.tag === 'inaccuracy' ? 'inacc' : r.tag === 'mistake' ? 'mist' : r.tag === 'blunder' ? 'blund' : r.tag);
-        row.innerHTML = '<span style="color:var(--text-muted);">' + r.num + (r.side === 'w' ? '.' : '...') + '</span><span style="font-family:monospace;font-weight:600;">' + r.san + '</span><span style="color:var(--text-dim);font-size:11px;">' + (r.loss > 0 ? '-' + r.loss + 'cp' : '') + '</span><span class="rm-tag ' + tagClass + '">' + r.tag.charAt(0).toUpperCase() + r.tag.slice(1) + '</span>';
+        const tagClass = `tag-${r.tag === 'inaccuracy' ? 'inacc' : r.tag === 'mistake' ? 'mist' : r.tag === 'blunder' ? 'blund' : r.tag === 'brilliant' ? 'brill' : r.tag}`;
+        const label = r.tag.charAt(0).toUpperCase() + r.tag.slice(1);
+        row.innerHTML = `
+          <span style="color:var(--text-muted);">${r.num}${r.side === 'w' ? '.' : '...'}</span>
+          <span style="font-family:monospace;font-weight:600;">${r.san}</span>
+          <span style="color:var(--text-dim);font-size:11px;">${r.loss > 0 ? '-'+r.loss+'cp' : ''}</span>
+          <span class="rm-tag ${tagClass}">${label}</span>
+        `;
         mList.appendChild(row);
       });
+
       document.getElementById('modalReview').classList.add('active');
+      
     } catch(err) {
       console.error('Review error:', err);
-      toast('Review failed — try a longer game');
+      toast('Review failed — try again after a longer game');
     }
   }, 100);
-}
-    
-    const loss = bestScore - playedScore; // centipawn loss
-    let tag = 'good';
-    if (loss <= 10) tag = 'best';
-    else if (loss <= 40) tag = 'good';
-    else if (loss <= 90) tag = 'inaccuracy';
-    else if (loss <= 200) tag = 'mistake';
-    else tag = 'blunder';
-    
-    // Brilliant: huge sacrifice that's still best
-    if (played.capture === undefined && loss <= 10 && bestScore > 200) {
-      // just a placeholder — brilliance detection is complex
-    }
-
-    if (isHumanMove) {
-      humanMoves++;
-      totalLoss += Math.max(0, loss);
-      counts[tag]++;
-    }
-
-    reviewData.push({
-      num: Math.floor(i / 2) + 1,
-      side: playerColor,
-      san: state.moveHistory[i].san,
-      tag,
-      loss: Math.round(loss),
-      isHuman: isHumanMove
-    });
-
-    chess.makeMove(played);
-  }
-
-  // Accuracy calculation (chess.com-ish formula)
-  const avgLoss = humanMoves ? totalLoss / humanMoves : 0;
-  const accuracy = Math.max(0, Math.min(100, 103 * Math.exp(-0.04 * avgLoss) - 3));
-
-  // Populate UI
-  document.getElementById('revAccuracy').textContent = accuracy.toFixed(1) + '%';
-  document.getElementById('revBrill').textContent = counts.brilliant;
-  document.getElementById('revBest').textContent = counts.best;
-  document.getElementById('revGood').textContent = counts.good;
-  document.getElementById('revInacc').textContent = counts.inaccuracy;
-  document.getElementById('revMist').textContent = counts.mistake;
-  document.getElementById('revBlund').textContent = counts.blunder;
-
-  // Coach feedback
-  let feedback = '';
-  if (accuracy >= 90) feedback = '🔥 Outstanding game! Grandmaster-level precision. Keep this up!';
-  else if (accuracy >= 80) feedback = '💪 Solid play! You made strong moves throughout. A few small inaccuracies to polish.';
-  else if (accuracy >= 70) feedback = '👍 Decent game. You played well but missed some tactical opportunities. Study your mistakes below.';
-  else if (accuracy >= 55) feedback = '📚 Room to grow. You have the basics, but watch for blunders — check your king safety and piece tactics.';
-  else feedback = '🎯 Keep practicing! Focus on not losing material and looking at ALL your opponent\'s threats before moving.';
-  
-  if (counts.blunder >= 3) feedback += ' Try slowing down — too many blunders this game.';
-  if (counts.best >= 10) feedback += ' Your best-move count is impressive! 🌟';
-  
-  document.getElementById('revFeedback').textContent = feedback;
-
-  // Move list
-  const mList = document.getElementById('revMovesList');
-  mList.innerHTML = '';
-  reviewData.forEach((r, idx) => {
-    const row = document.createElement('div');
-    row.className = 'rm-row';
-    const tagClass = `tag-${r.tag === 'inaccuracy' ? 'inacc' : r.tag === 'mistake' ? 'mist' : r.tag === 'blunder' ? 'blund' : r.tag === 'brilliant' ? 'brill' : r.tag}`;
-    const label = r.tag.charAt(0).toUpperCase() + r.tag.slice(1, 5);
-    row.innerHTML = `
-      <span style="color:var(--text-muted);">${r.num}${r.side === 'w' ? '.' : '...'}</span>
-      <span style="font-family:monospace;font-weight:600;">${r.san}</span>
-      <span style="color:var(--text-dim);font-size:11px;">${r.loss > 0 ? '-'+r.loss+'cp' : ''}</span>
-      <span class="rm-tag ${tagClass}">${label}</span>
-    `;
-    mList.appendChild(row);
-  });
-
-  document.getElementById('modalReview').classList.add('active');
 }
 
 function quickEval(chess, depth) {
@@ -2538,20 +2522,6 @@ init();
 loadSettings();
 setupPWA();
 </script>
-
-<div style="text-align:center; margin: 30px auto; max-width: 728px; padding: 10px;">
-<script>
-  atOptions = {
-    'key' : '94153875576df1dd601aeb81cad849fb',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/94153875576df1dd601aeb81cad849fb/invoke.js"></script>
-
-</div>
 
 </body>
 </html>
