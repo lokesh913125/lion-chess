@@ -858,7 +858,7 @@ body.zen { background: #1a1816; }
     <h2 id="gameOverTitle">Game Over</h2>
     <p id="gameOverMsg"></p>
     <div class="modal-btns">
-      <button class="btn" onclick="closeModal('modalGameOver');generateReview();" id="reviewGameBtn">📊 Game Review</button>
+      <button class="btn" onclick="closeModal('modalGameOver');setTimeout(generateReview,200);" id="reviewGameBtn">📊 Game Review</button>
       <button class="btn secondary" onclick="closeModal('modalGameOver');newGame()">🔄 New Game</button>
       <button class="btn secondary" onclick="closeModal('modalGameOver');showScreen('home')">🏠 Home</button>
     </div>
@@ -1519,6 +1519,10 @@ function setTheme(key) {
 
 /* ---------- SCREEN NAV ---------- */
 function showScreen(name) {
+  if (name === 'home') {
+    stopClock();
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   if (name === 'home') updateStats();
@@ -1942,37 +1946,100 @@ function handleGameOver(result) {
 
 /* ---------- GAME REVIEW ---------- */
 function generateReview() {
+  if (state.moveHistory.length < 2) {
+    toast('Play at least a few moves first');
+    return;
+  }
   toast('Analyzing your game... 🔍');
-  // Analyze each move: compare played move's eval vs best move's eval
-  const reviewData = [];
-  const chess = new Chess();
-  let humanMoves = 0;
-  let totalLoss = 0;
-  const counts = { brilliant: 0, best: 0, good: 0, inaccuracy: 0, mistake: 0, blunder: 0 };
-
-  for (let i = 0; i < state.moveHistory.length; i++) {
-    const played = state.moveHistory[i].move;
-    const playerColor = chess.turn;
-    const isHumanMove = state.mode === 'friend' || playerColor === getHumanColor();
-    
-    // Get best move at this position
-    const legal = chess.genLegalMoves();
-    if (legal.length === 0) break;
-    
-    // Quick eval of all moves
-    let bestScore = -Infinity;
-    let bestMove = legal[0];
-    let playedScore = 0;
-    
-    for (const m of legal) {
-      chess.makeMove(m);
-      const score = -quickEval(chess, 2);
-      chess.unmakeMove();
-      if (score > bestScore) { bestScore = score; bestMove = m; }
-      if (m.from === played.from && m.to === played.to && m.promo === played.promo) {
-        playedScore = score;
+  setTimeout(() => {
+    try {
+      const reviewData = [];
+      const chess = new Chess();
+      let humanMoves = 0;
+      let totalLoss = 0;
+      const counts = { brilliant: 0, best: 0, good: 0, inaccuracy: 0, mistake: 0, blunder: 0 };
+      for (let i = 0; i < state.moveHistory.length; i++) {
+        const played = state.moveHistory[i].move;
+        const playerColor = chess.turn;
+        const isHumanMove = state.mode === 'friend' || playerColor === state.humanColor;
+        const legal = chess.genLegalMoves();
+        if (legal.length === 0) break;
+        let bestScore = -Infinity;
+        let playedScore = -Infinity;
+        let foundPlayed = false;
+        for (const m of legal) {
+          chess.makeMove(m);
+          const score = -quickEval(chess, 2);
+          chess.unmakeMove();
+          if (score > bestScore) bestScore = score;
+          if (m.from === played.from && m.to === played.to && ((!m.promo && !played.promo) || m.promo === played.promo)) {
+            playedScore = score;
+            foundPlayed = true;
+          }
+        }
+        if (!foundPlayed) {
+          const san = state.moveHistory[i].san;
+          for (const m of legal) {
+            if (chess.toSAN(m).replace(/[+#]/g,'') === san.replace(/[+#]/g,'')) {
+              chess.makeMove(m);
+              playedScore = -quickEval(chess, 2);
+              chess.unmakeMove();
+              foundPlayed = true;
+              played.from = m.from;
+              played.to = m.to;
+              played.promo = m.promo;
+              break;
+            }
+          }
+        }
+        if (!foundPlayed) playedScore = bestScore - 100;
+        const loss = Math.max(0, bestScore - playedScore);
+        let tag = 'good';
+        if (loss <= 10) tag = 'best';
+        else if (loss <= 40) tag = 'good';
+        else if (loss <= 90) tag = 'inaccuracy';
+        else if (loss <= 200) tag = 'mistake';
+        else tag = 'blunder';
+        if (isHumanMove) { humanMoves++; totalLoss += loss; counts[tag]++; }
+        reviewData.push({ num: Math.floor(i/2)+1, side: playerColor, san: state.moveHistory[i].san, tag, loss: Math.round(loss), isHuman: isHumanMove });
+        const replayMove = legal.find(m => m.from === played.from && m.to === played.to && ((!m.promo && !played.promo) || m.promo === played.promo));
+        if (replayMove) chess.makeMove(replayMove);
+        else break;
       }
+      const avgLoss = humanMoves ? totalLoss / humanMoves : 0;
+      const accuracy = Math.max(0, Math.min(100, 103 * Math.exp(-0.04 * avgLoss) - 3));
+      document.getElementById('revAccuracy').textContent = accuracy.toFixed(1) + '%';
+      document.getElementById('revBrill').textContent = counts.brilliant;
+      document.getElementById('revBest').textContent = counts.best;
+      document.getElementById('revGood').textContent = counts.good;
+      document.getElementById('revInacc').textContent = counts.inaccuracy;
+      document.getElementById('revMist').textContent = counts.mistake;
+      document.getElementById('revBlund').textContent = counts.blunder;
+      let feedback = '';
+      if (accuracy >= 90) feedback = '🔥 Outstanding game! Grandmaster-level precision!';
+      else if (accuracy >= 80) feedback = '💪 Solid play! A few small inaccuracies to polish.';
+      else if (accuracy >= 70) feedback = '👍 Decent game but missed some tactical opportunities.';
+      else if (accuracy >= 55) feedback = '📚 Room to grow. Watch for blunders and king safety.';
+      else feedback = '🎯 Keep practicing! Focus on not losing material.';
+      if (counts.blunder >= 3) feedback += ' Too many blunders — try slowing down.';
+      if (counts.best >= 10) feedback += ' Your best-move count is impressive! 🌟';
+      document.getElementById('revFeedback').textContent = feedback;
+      const mList = document.getElementById('revMovesList');
+      mList.innerHTML = '';
+      reviewData.forEach((r) => {
+        const row = document.createElement('div');
+        row.className = 'rm-row';
+        const tagClass = 'tag-' + (r.tag === 'inaccuracy' ? 'inacc' : r.tag === 'mistake' ? 'mist' : r.tag === 'blunder' ? 'blund' : r.tag);
+        row.innerHTML = '<span style="color:var(--text-muted);">' + r.num + (r.side === 'w' ? '.' : '...') + '</span><span style="font-family:monospace;font-weight:600;">' + r.san + '</span><span style="color:var(--text-dim);font-size:11px;">' + (r.loss > 0 ? '-' + r.loss + 'cp' : '') + '</span><span class="rm-tag ' + tagClass + '">' + r.tag.charAt(0).toUpperCase() + r.tag.slice(1) + '</span>';
+        mList.appendChild(row);
+      });
+      document.getElementById('modalReview').classList.add('active');
+    } catch(err) {
+      console.error('Review error:', err);
+      toast('Review failed — try a longer game');
     }
+  }, 100);
+}
     
     const loss = bestScore - playedScore; // centipawn loss
     let tag = 'good';
