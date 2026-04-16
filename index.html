@@ -11,7 +11,7 @@
 <meta name="description" content="Lion Chess — Play chess vs AI, friends, solve puzzles. By Lokesh.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🦁%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23262421'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E🦁%3C/text%3E%3C/svg%3E">
-<link rel="manifest" href='data:application/manifest+json,{"name":"Lion Chess","short_name":"LionChess","description":"Play chess online by Lokesh","start_url":".","display":"standalone","orientation":"any","background_color":"%23262421","theme_color":"%23262421","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27%3E%3Crect width=%27192%27 height=%27192%27 fill=%27%23262421%27/%3E%3Ctext y=%27.9em%27 font-size=%27160%27 x=%2715%27%3E🦁%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"},{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Crect width=%27512%27 height=%27512%27 fill=%27%23262421%27/%3E%3Ctext y=%27.9em%27 font-size=%27430%27 x=%2740%27%3E🦁%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml"}]}'>
+<link rel="manifest" href="/manifest.json">
 <title>Lion Chess 🦁 — Play Chess Online</title>
 <style>
 :root {
@@ -2440,80 +2440,36 @@ function playSound(type) {
 
 /* ---------- PWA: Service Worker + Install Prompt ---------- */
 function setupPWA() {
-  // Inline manifest via blob
-  const manifest = {
-    name: "Lion Chess",
-    short_name: "Lion Chess",
-    description: "Play chess vs AI, friends, and solve puzzles",
-    start_url: ".",
-    display: "standalone",
-    orientation: "any",
-    background_color: "#262421",
-    theme_color: "#262421",
-    icons: [
-      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23262421'/%3E%3Ctext y='.9em' font-size='150' x='20'%3E🦁%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
-      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23262421'/%3E%3Ctext y='.9em' font-size='400' x='56'%3E🦁%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = URL.createObjectURL(blob);
-  document.head.appendChild(link);
-
-  // Register inline service worker for offline support
-  if ('serviceWorker' in navigator) {
-    const swCode = `
-      const CACHE = 'lion-chess-v1';
-      self.addEventListener('install', e => {
-        self.skipWaiting();
-        e.waitUntil(caches.open(CACHE).then(c => c.add(location.href.replace('/sw.js',''))).catch(()=>{}));
-      });
-      self.addEventListener('activate', e => self.clients.claim());
-      self.addEventListener('fetch', e => {
-        e.respondWith(
-          caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
-            if (resp.ok && e.request.method === 'GET') {
-              const clone = resp.clone();
-              caches.open(CACHE).then(c => c.put(e.request, clone)).catch(()=>{});
-            }
-            return resp;
-          }).catch(() => caches.match('/')))
-        );
-      });
-    `;
-    try {
-      const swBlob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swUrl).catch(() => {});
-    } catch(e) {}
-  }
-
   // Install prompt handling
   let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
+  window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
-    const btn = document.getElementById('installBtn');
+    var btn = document.getElementById('installBtn');
     if (btn) btn.style.display = 'inline-block';
   });
-  window.installPWA = () => {
+  window.installPWA = function() {
     if (!deferredPrompt) {
-      toast('Use your browser menu → "Add to Home Screen"');
+      toast('Use browser menu > Add to Home Screen');
       return;
     }
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
+    deferredPrompt.userChoice.then(function() {
       deferredPrompt = null;
-      const btn = document.getElementById('installBtn');
+      var btn = document.getElementById('installBtn');
       if (btn) btn.style.display = 'none';
       toast('Thanks for installing! 🦁');
     });
   };
-  // Hide install button if already installed
-  window.addEventListener('appinstalled', () => {
-    const btn = document.getElementById('installBtn');
+  window.addEventListener('appinstalled', function() {
+    var btn = document.getElementById('installBtn');
     if (btn) btn.style.display = 'none';
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function() {});
   });
 }
 
