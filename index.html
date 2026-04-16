@@ -626,12 +626,161 @@ body.zen { background: #1a1816; }
 
 /* ============ MOBILE IMPROVEMENTS ============ */
 @media (max-width: 600px) {
-  .home-hero h1 { font-size: 36px; }
-  .header { padding: 8px 12px; }
-  .logo { font-size: 18px; }
-  .header-stats { font-size: 11px; gap: 8px; }
-  .panel { padding: 12px; }
-  .menu-card { padding: 18px; }
+  /* Header compact */
+  .header { padding: 6px 12px; }
+  .logo { font-size: 16px; gap: 6px; }
+  .logo-icon { font-size: 22px; }
+  .header-stats { font-size: 11px; gap: 6px; }
+
+  /* Home screen */
+  .home-hero { padding: 24px 16px 18px; margin-bottom: 16px; }
+  .home-hero h1 { font-size: 32px; }
+  .home-hero p { font-size: 13px; }
+  .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 4px; }
+  .menu-card { padding: 14px; border-radius: 10px; }
+  .card-icon { font-size: 28px; margin-bottom: 4px; }
+  .card-title { font-size: 15px; }
+  .card-desc { font-size: 11px; }
+  .stats-bar { grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px; margin-top: 16px; }
+  .stat-value { font-size: 22px; }
+  .stat-label { font-size: 10px; }
+
+  /* Game screen — board-first layout */
+  #screen-game { padding: 4px; }
+  .game-wrap {
+    grid-template-columns: 1fr !important;
+    gap: 6px;
+    padding: 0;
+  }
+  .board-wrap { order: 1; }
+  .side-col { 
+    order: 2; 
+    max-height: none !important; 
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .side-col:first-child { display: none; } /* Hide left settings panel on mobile */
+
+  /* Board: Full width, fit viewport height */
+  .board-container {
+    width: calc(100vw - 8px) !important;
+    max-width: none !important;
+    margin: 2px auto !important;
+  }
+  .board { border-radius: 2px; box-shadow: none; }
+  .board-row { max-width: none !important; gap: 0; }
+  .eval-bar { display: none !important; } /* Hide eval bar on mobile */
+
+  /* Player strips: compact, chess.com style */
+  .player-strip {
+    padding: 6px 10px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    max-width: none !important;
+  }
+  .player-strip.active { box-shadow: none; border-left: 3px solid var(--green); }
+  .player-avatar { width: 28px; height: 28px; font-size: 16px; border-radius: 4px; }
+  .player-name { font-size: 13px; }
+  .player-clock { font-size: 18px; padding: 4px 10px; min-width: 65px; }
+  .captured { font-size: 11px; }
+
+  /* Piece sizing on mobile */
+  .square { font-size: clamp(32px, 11vw, 48px); }
+  .square .coord { font-size: 8px; }
+  .square .hint { width: 28%; height: 28%; }
+
+  /* Move list compact */
+  .move-list { max-height: 120px; font-size: 12px; padding: 6px; }
+  .move-row { padding: 2px 4px; }
+
+  /* Controls: horizontal toolbar */
+  .controls { grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 6px; }
+  .ctrl-btn { padding: 8px; font-size: 14px; border-radius: 4px; }
+
+  /* Action buttons: compact grid */
+  .panel { padding: 10px; border-radius: 6px; }
+  .panel h3 { font-size: 12px; margin-bottom: 8px; }
+  .btn { padding: 8px 12px; font-size: 13px; margin-top: 4px; border-radius: 4px; }
+
+  /* Mobile bottom action bar */
+  .mobile-actions {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-darker);
+    border-top: 1px solid var(--border);
+    padding: 6px 8px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+  .mobile-actions .m-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    font-size: 9px;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mobile-actions .m-btn:active { background: var(--bg-panel); }
+  .mobile-actions .m-btn .m-icon { font-size: 20px; }
+  .mobile-actions .m-btn.active { color: var(--green); }
+
+  /* Add bottom padding so content doesn't hide behind fixed bar */
+  #screen-game { padding-bottom: 70px; }
+  #screen-home { padding-bottom: 70px; }
+
+  /* Modals */
+  .modal { padding: 20px; width: 95%; }
+  .modal h2 { font-size: 20px; }
+  .review-modal { padding: 18px; width: 95%; max-height: 90vh; }
+  .accuracy-display { padding: 14px; }
+  .accuracy-display .acc-num { font-size: 36px; }
+  .review-summary { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .rev-stat { padding: 8px; }
+  .rev-stat .rv-num { font-size: 20px; }
+  .review-moves { max-height: 160px; }
+
+  /* Settings panel inline on mobile */
+  .setting-row { padding: 6px 0; font-size: 12px; }
+  .level-btn { font-size: 11px; padding: 5px; }
+
+  /* Footer */
+  .footer { padding: 14px; font-size: 11px; margin-bottom: 60px; }
+
+  /* Hide elements not needed on mobile game screen */
+  #screen-game .side-col .panel h3 { font-size: 11px; }
+  #screen-game .btn.secondary { padding: 6px 10px; font-size: 12px; }
+}
+
+/* Extra small phones */
+@media (max-width: 380px) {
+  .board-container { width: calc(100vw - 4px) !important; }
+  .player-clock { font-size: 16px; min-width: 55px; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .home-hero h1 { font-size: 28px; }
+  .square { font-size: clamp(28px, 10vw, 40px); }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header { padding: 4px 12px; }
+  .logo-icon { display: none; }
+  .board-container {
+    width: calc(100vh - 100px) !important;
+    max-width: 90vw !important;
+  }
+  .player-strip { padding: 4px 8px; }
+  .player-clock { font-size: 14px; }
 }
 </style>
 </head>
@@ -703,11 +852,13 @@ body.zen { background: #1a1816; }
   </div>
 
   <div class="stats-bar">
+    <div class="stat-item"><div class="stat-value" id="statElo" style="color:var(--accent);">800</div><div class="stat-label">ELO Rating</div></div>
+    <div class="stat-item"><div class="stat-value" id="statStreak">0</div><div class="stat-label">Win Streak</div></div>
     <div class="stat-item"><div class="stat-value" id="statWins">0</div><div class="stat-label">Wins</div></div>
     <div class="stat-item"><div class="stat-value" id="statLosses">0</div><div class="stat-label">Losses</div></div>
     <div class="stat-item"><div class="stat-value" id="statDraws">0</div><div class="stat-label">Draws</div></div>
-    <div class="stat-item"><div class="stat-value" id="statPuzzles">0</div><div class="stat-label">Puzzles Solved</div></div>
-    <div class="stat-item"><div class="stat-value" id="statGames">0</div><div class="stat-label">Games Played</div></div>
+    <div class="stat-item"><div class="stat-value" id="statPuzzles">0</div><div class="stat-label">Puzzles</div></div>
+    <div class="stat-item"><div class="stat-value" id="statGames">0</div><div class="stat-label">Games</div></div>
   </div>
 </div>
 
@@ -784,7 +935,10 @@ body.zen { background: #1a1816; }
             <div class="captured" id="topCaptured"></div>
           </div>
         </div>
-        <div class="player-clock" id="topClock">10:00</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="topMaterialAdv" style="font-size:13px;font-weight:700;color:var(--green);"></span>
+          <div class="player-clock" id="topClock">10:00</div>
+        </div>
       </div>
 
       <div class="board-row">
@@ -806,7 +960,10 @@ body.zen { background: #1a1816; }
             <div class="captured" id="bottomCaptured"></div>
           </div>
         </div>
-        <div class="player-clock" id="bottomClock">10:00</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="bottomMaterialAdv" style="font-size:13px;font-weight:700;color:var(--green);"></span>
+          <div class="player-clock" id="bottomClock">10:00</div>
+        </div>
       </div>
     </div>
 
@@ -847,6 +1004,29 @@ body.zen { background: #1a1816; }
         <button class="btn secondary" onclick="resetPuzzle()">🔄 Retry</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM ACTION BAR (chess.com style) -->
+<div class="mobile-actions" id="mobileActions" style="display:none;">
+  <button class="m-btn" onclick="showScreen('home')"><span class="m-icon">🏠</span>Home</button>
+  <button class="m-btn" onclick="undoMove()"><span class="m-icon">↩️</span>Undo</button>
+  <button class="m-btn" onclick="useInGameHint()"><span class="m-icon">💡</span>Hint</button>
+  <button class="m-btn" onclick="flipBoard()"><span class="m-icon">🔃</span>Flip</button>
+  <button class="m-btn" onclick="showMobileMenu()"><span class="m-icon">☰</span>More</button>
+</div>
+
+<!-- MOBILE MORE MENU (slide up) -->
+<div class="modal-overlay" id="modalMobileMenu">
+  <div class="modal" style="max-width:340px;">
+    <h2 style="font-size:18px;margin-bottom:12px;">⚡ Quick Actions</h2>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu');newGame()">🔄 New Game</button>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu');saveGame()">💾 Save Game</button>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu');exportPGN()">📋 Export PGN</button>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu');generateReview()">📊 Game Review</button>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu');toggleZen()">🧘 Zen Mode</button>
+    <button class="btn danger" onclick="closeModal('modalMobileMenu');resignGame()">🏳️ Resign</button>
+    <button class="btn secondary" onclick="closeModal('modalMobileMenu')" style="margin-top:8px;">✕ Close</button>
   </div>
 </div>
 
@@ -1440,9 +1620,9 @@ const state = {
   coords: true,
   premoveEnabled: true,
   premove: null,
-  moveHistory: [], // {san, fen, move}
+  moveHistory: [], // {san, fen, move, time}
   viewIndex: -1, // -1 = current
-  captured: { w: [], b: [] }, // w captures black, b captures white
+  captured: { w: [], b: [] },
   clockTime: { w: 600, b: 600 },
   clockRunning: false,
   clockInterval: null,
@@ -1457,19 +1637,32 @@ const state = {
   humanColor: 'w',
   timeControl: 600,
   hintsLeft: 3,
+  moveStartTime: Date.now(),
   stats: loadStats(),
 };
 
-/* ---------- PUZZLES (handpicked mate-in-2 / tactics) ---------- */
+/* ---------- PUZZLES (20 handpicked tactical positions) ---------- */
 const PUZZLES = [
-  { fen: '6k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1', solution: ['a1a8'], desc: 'White to mate in 1' },
-  { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1', solution: ['h5f7'], desc: 'Scholar\'s Mate — White to win' },
-  { fen: '2kr3r/ppp1qppp/2n1bn2/2b1p3/4P3/2NP1N2/PPP1BPPP/R1BQ1RK1 w - - 0 1', solution: ['c3d5'], desc: 'White plays a strong move' },
-  { fen: 'r1b1k2r/pppp1ppp/2n2n2/2b1N3/2B1P3/8/PPPP1qPP/RNBQ1K1R w kq - 0 1', solution: ['f1g1', 'f1e1'], desc: 'White to defend' },
-  { fen: '3r2k1/pp3ppp/2p5/2P5/1P1q4/3Q4/P4PPP/3R2K1 b - - 0 1', solution: ['d4d3'], desc: 'Black wins material' },
-  { fen: 'r3k2r/pp1b1ppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R1B1K2R w KQkq - 0 1', solution: ['e1g1'], desc: 'White castles' },
-  { fen: '5rk1/pp3ppp/4p3/3pP3/3P2Q1/P1P2q2/1P3P1P/R4RK1 b - - 0 1', solution: ['f3g2'], desc: 'Black to mate' },
-  { fen: '4rk2/pp3ppp/3b4/3Bn3/8/2N5/PPP2PPP/2KR4 w - - 0 1', solution: ['d5f7'], desc: 'White wins material' },
+  { fen: '6k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1', solution: ['a1a8'], desc: 'Back Rank Mate — White to play', rating: 600 },
+  { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1', solution: ['h5f7'], desc: 'Scholar\'s Mate!', rating: 700 },
+  { fen: '2kr3r/ppp1qppp/2n1bn2/2b1p3/4P3/2NP1N2/PPP1BPPP/R1BQ1RK1 w - - 0 1', solution: ['c3d5'], desc: 'Knight Fork Incoming', rating: 900 },
+  { fen: 'r1b1k2r/pppp1ppp/2n2n2/2b1N3/2B1P3/8/PPPP1qPP/RNBQ1K1R w kq - 0 1', solution: ['f1g1', 'f1e1'], desc: 'Defend the King!', rating: 800 },
+  { fen: '3r2k1/pp3ppp/2p5/2P5/1P1q4/3Q4/P4PPP/3R2K1 b - - 0 1', solution: ['d4d3'], desc: 'Queen Exchange Wins', rating: 850 },
+  { fen: 'r3k2r/pp1b1ppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R1B1K2R w KQkq - 0 1', solution: ['e1g1'], desc: 'Castle for Safety', rating: 650 },
+  { fen: '5rk1/pp3ppp/4p3/3pP3/3P2Q1/P1P2q2/1P3P1P/R4RK1 b - - 0 1', solution: ['f3g2'], desc: 'Mate in 1!', rating: 750 },
+  { fen: '4rk2/pp3ppp/3b4/3Bn3/8/2N5/PPP2PPP/2KR4 w - - 0 1', solution: ['d5f7'], desc: 'Bishop Snipes f7', rating: 900 },
+  { fen: 'r2qkb1r/ppp2ppp/2n1bn2/3pp3/4P3/3P1N2/PPP1BPPP/RNBQK2R w KQkq - 0 1', solution: ['e1g1'], desc: 'Development First — Castle!', rating: 600 },
+  { fen: 'rnb1k2r/pppp1ppp/5n2/2b1p1q1/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 w kq - 0 1', solution: ['f3e5'], desc: 'Knight Jumps In', rating: 950 },
+  { fen: 'r1bqr1k1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQR1K1 w - - 0 1', solution: ['c4f7'], desc: 'Classical Bishop Sacrifice', rating: 1000 },
+  { fen: '2r3k1/5ppp/p7/1p6/1Pb1rN2/P7/5PPP/R3R1K1 w - - 0 1', solution: ['f4e6'], desc: 'Knight Outpost — Dominate!', rating: 1050 },
+  { fen: 'r4rk1/pp2ppbp/2np1np1/q7/3NP1b1/2N1BP2/PPPQ2PP/R3KB1R w KQ - 0 1', solution: ['d4b5'], desc: 'Attack the Queen!', rating: 1100 },
+  { fen: '3r1rk1/pp3ppp/4bn2/2Bp4/8/1PN1PN2/P4PPP/2RR2K1 w - - 0 1', solution: ['e3d4'], desc: 'Central Pawn Advance', rating: 850 },
+  { fen: 'r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQR1K1 w - - 0 1', solution: ['c4f7'], desc: 'Sacrifice on f7!', rating: 1200 },
+  { fen: '5rk1/1p3ppp/p2p4/3Pp3/1PP1n3/P3BN1P/5PP1/R5K1 b - - 0 1', solution: ['e4f2'], desc: 'Knight Fork Wins Exchange', rating: 1000 },
+  { fen: 'r2qk2r/ppp1bppp/2n1bn2/3pp3/8/2NPBNP1/PPP1PPBP/R2QK2R w KQkq - 0 1', solution: ['e1g1'], desc: 'King Safety First', rating: 700 },
+  { fen: '2r2rk1/pp1b1ppp/8/3pP3/3n4/3B4/PPP1NPPP/R4RK1 w - - 0 1', solution: ['d3h7'], desc: 'Greek Gift Sacrifice!', rating: 1300 },
+  { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1', solution: ['f1b5'], desc: 'Ruy Lopez — Pin the Knight', rating: 650 },
+  { fen: 'r1b1kb1r/ppppqppp/2n2n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1', solution: ['e1g1'], desc: 'Develop and Castle', rating: 600 },
 ];
 
 /* ---------- INIT ---------- */
@@ -1533,12 +1726,21 @@ function setTheme(key) {
 function showScreen(name) {
   if (name === 'home') {
     stopClock();
-    // Close any open modals
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
   }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   if (name === 'home') updateStats();
+  // Show/hide mobile bottom bar
+  var mBar = document.getElementById('mobileActions');
+  if (mBar) {
+    var isMobile = window.innerWidth <= 600;
+    mBar.style.display = (name === 'game' && isMobile) ? 'grid' : 'none';
+  }
+}
+
+function showMobileMenu() {
+  document.getElementById('modalMobileMenu').classList.add('active');
 }
 
 /* ---------- BOARD RENDER ---------- */
@@ -1849,6 +2051,8 @@ function updatePlayerInfo() {
   // captured
   document.getElementById('topCaptured').innerHTML = state.captured[topColor].map(p => CAPTURED_UNICODE[p]).join('');
   document.getElementById('bottomCaptured').innerHTML = state.captured[bottomColor].map(p => CAPTURED_UNICODE[p]).join('');
+  // material advantage
+  updateMaterialDisplay();
 }
 
 /* ---------- MOVE LIST ---------- */
@@ -1919,40 +2123,61 @@ function newGame() { startGame(state.mode); }
 function handleGameOver(result) {
   state.gameActive = false;
   stopClock();
+  var isWin = false, isDraw = false, isLoss = false;
   const titles = {
-    'checkmate': state.chess.turn === getHumanColor() ? 'You Lost' : 'You Won! 🏆',
-    'stalemate': 'Stalemate',
-    'fifty-move': 'Draw (50-move rule)',
-    'insufficient': 'Draw (Insufficient material)',
-    'time-w': 'White ran out of time',
-    'time-b': 'Black ran out of time',
-    'resign': 'You resigned'
+    'checkmate': state.chess.turn === getHumanColor() ? 'You Lost 😞' : 'You Won! 🏆',
+    'stalemate': 'Stalemate 🤝',
+    'fifty-move': 'Draw — 50-move rule 🤝',
+    'insufficient': 'Draw — Insufficient material 🤝',
+    'time-w': 'White ran out of time ⏰',
+    'time-b': 'Black ran out of time ⏰',
+    'resign': 'You resigned 🏳️'
   };
   const title = titles[result] || 'Game Over';
   let msg = '';
-  if (result === 'checkmate') msg = state.chess.turn === getHumanColor() ? 'The opponent won by checkmate.' : 'Beautiful! Checkmate.';
-  else if (result === 'stalemate') msg = 'No legal moves, not in check.';
-  else msg = 'The game is over.';
+  if (result === 'checkmate') {
+    if (state.chess.turn === getHumanColor()) { msg = 'Better luck next time!'; isLoss = true; }
+    else { msg = 'Brilliant! Checkmate! 🎯'; isWin = true; }
+  } else if (result === 'stalemate' || result === 'fifty-move' || result === 'insufficient') {
+    msg = 'Game ended in a draw.'; isDraw = true;
+  } else if (result === 'resign') { msg = 'You resigned the game.'; isLoss = true; }
+  else if (result.startsWith('time-')) {
+    if (result === 'time-' + getHumanColor()) { msg = 'You ran out of time!'; isLoss = true; }
+    else { msg = 'Opponent ran out of time! You win!'; isWin = true; }
+  }
 
-  // Update stats
-  if (state.mode === 'ai') {
+  // Update stats + ELO
+  if (state.mode === 'ai' || state.mode === 'friend') {
     state.stats.games++;
-    if (result === 'checkmate') {
-      if (state.chess.turn === getHumanColor()) state.stats.losses++;
-      else state.stats.wins++;
-    } else if (result === 'resign') state.stats.losses++;
-    else if (result.startsWith('time-')) {
-      if (result === 'time-' + getHumanColor()) state.stats.losses++;
-      else state.stats.wins++;
-    } else state.stats.draws++;
+    if (isWin) { state.stats.wins++; updateEloRating(1); }
+    else if (isLoss) { state.stats.losses++; updateEloRating(0); }
+    else { state.stats.draws++; updateEloRating(0.5); }
+    
+    // Add to match history
+    addToMatchHistory(isWin ? 'win' : isLoss ? 'loss' : 'draw', state.moveHistory.length);
     saveStats();
   }
+
+  // Enhanced game over message with ELO
+  var eloMsg = '';
+  if (state.mode === 'ai') {
+    eloMsg = ' | Rating: ' + state.stats.elo;
+    if (state.stats.streak > 1) eloMsg += ' | Streak: ' + state.stats.streak + '🔥';
+  }
+  msg += eloMsg;
+
+  // Sound effects
+  if (isWin) { playSound('win'); }
+  else if (isLoss) { playSound('lose'); }
+  else { playSound('draw'); }
+
+  // Confetti on win!
+  if (isWin) setTimeout(showConfetti, 300);
 
   document.getElementById('gameOverTitle').textContent = title;
   document.getElementById('gameOverMsg').textContent = msg;
   document.getElementById('modalGameOver').classList.add('active');
-  // Hide review btn for too-short games
-  const revBtn = document.getElementById('reviewGameBtn');
+  var revBtn = document.getElementById('reviewGameBtn');
   if (revBtn) revBtn.style.display = (state.moveHistory.length >= 4 && state.mode !== 'puzzle') ? 'block' : 'none';
   updateStats();
 }
@@ -2366,10 +2591,14 @@ function toggleZen() {
 /* ---------- STATS ---------- */
 function loadStats() {
   try {
-    return JSON.parse(localStorage.getItem('lionChess_stats')) || { wins: 0, losses: 0, draws: 0, games: 0, puzzles: 0 };
-  } catch { return { wins: 0, losses: 0, draws: 0, games: 0, puzzles: 0 }; }
+    var def = { wins: 0, losses: 0, draws: 0, games: 0, puzzles: 0, elo: 800, streak: 0, bestStreak: 0, matchHistory: [] };
+    var saved = JSON.parse(localStorage.getItem('lionChess_stats'));
+    return saved ? Object.assign(def, saved) : def;
+  } catch { return { wins: 0, losses: 0, draws: 0, games: 0, puzzles: 0, elo: 800, streak: 0, bestStreak: 0, matchHistory: [] }; }
 }
 function saveStats() {
+  // Keep only last 20 match history entries
+  if (state.stats.matchHistory.length > 20) state.stats.matchHistory = state.stats.matchHistory.slice(-20);
   localStorage.setItem('lionChess_stats', JSON.stringify(state.stats));
 }
 function updateStats() {
@@ -2381,6 +2610,122 @@ function updateStats() {
   document.getElementById('hsWins').textContent = state.stats.wins;
   document.getElementById('hsLosses').textContent = state.stats.losses;
   document.getElementById('hsDraws').textContent = state.stats.draws;
+  // Update ELO display if exists
+  var eloEl = document.getElementById('statElo');
+  if (eloEl) eloEl.textContent = state.stats.elo;
+  var streakEl = document.getElementById('statStreak');
+  if (streakEl) streakEl.textContent = state.stats.streak > 0 ? state.stats.streak + '🔥' : '0';
+}
+
+/* ---------- ELO RATING SYSTEM ---------- */
+function updateEloRating(result) {
+  // result: 1 = win, 0 = loss, 0.5 = draw
+  var aiElo = [600, 900, 1200, 1600][state.aiLevel - 1] || 900;
+  var expected = 1 / (1 + Math.pow(10, (aiElo - state.stats.elo) / 400));
+  var K = state.stats.games < 30 ? 40 : 20; // higher K for new players
+  state.stats.elo = Math.max(100, Math.round(state.stats.elo + K * (result - expected)));
+  // Streak tracking
+  if (result === 1) {
+    state.stats.streak++;
+    if (state.stats.streak > state.stats.bestStreak) state.stats.bestStreak = state.stats.streak;
+  } else {
+    state.stats.streak = 0;
+  }
+}
+
+/* ---------- MATCH HISTORY ---------- */
+function addToMatchHistory(result, moves) {
+  state.stats.matchHistory.push({
+    date: new Date().toISOString().slice(0, 10),
+    time: new Date().toLocaleTimeString('en', {hour:'2-digit', minute:'2-digit'}),
+    result: result, // 'win', 'loss', 'draw'
+    mode: state.mode,
+    level: state.aiLevel,
+    moves: moves,
+    elo: state.stats.elo,
+    opening: detectOpening() || 'Unknown'
+  });
+}
+
+/* ---------- MATERIAL ADVANTAGE ---------- */
+function getMaterialAdvantage() {
+  var vals = {P:1, N:3, B:3, R:5, Q:9, K:0};
+  var wMat = 0, bMat = 0;
+  for (var i = 0; i < 64; i++) {
+    var p = state.chess.board[i];
+    if (!p) continue;
+    if (p[0] === 'w') wMat += vals[p[1]] || 0;
+    else bMat += vals[p[1]] || 0;
+  }
+  return wMat - bMat;
+}
+function updateMaterialDisplay() {
+  var adv = getMaterialAdvantage();
+  var topAdv = document.getElementById('topMaterialAdv');
+  var bottomAdv = document.getElementById('bottomMaterialAdv');
+  if (!topAdv || !bottomAdv) return;
+  var topColor = state.flipped ? 'w' : 'b';
+  if ((topColor === 'b' && adv < 0) || (topColor === 'w' && adv > 0)) {
+    topAdv.textContent = '+' + Math.abs(adv);
+    bottomAdv.textContent = '';
+  } else if ((topColor === 'b' && adv > 0) || (topColor === 'w' && adv < 0)) {
+    bottomAdv.textContent = '+' + Math.abs(adv);
+    topAdv.textContent = '';
+  } else {
+    topAdv.textContent = '';
+    bottomAdv.textContent = '';
+  }
+}
+
+/* ---------- CONFETTI EFFECT ON WIN ---------- */
+function showConfetti() {
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var particles = [];
+  var colors = ['#81b64c','#f7c948','#e04b4b','#4c9bd6','#a8d065','#ff9f43','#26c2a3'];
+  for (var i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      vx: (Math.random() - 0.5) * 8,
+      vy: Math.random() * 4 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 8 + 3,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 10
+    });
+  }
+  var frame = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(function(p) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1;
+      p.rotation += p.rotSpeed;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 150) requestAnimationFrame(animate);
+    else document.body.removeChild(canvas);
+  }
+  animate();
+}
+
+/* ---------- VIBRATION FEEDBACK (Mobile) ---------- */
+function vibrate(pattern) {
+  try {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+  } catch(e) {}
 }
 
 /* ---------- SETTINGS ---------- */
@@ -2420,56 +2765,120 @@ function toggleSound() {
   saveSettings();
 }
 
-/* ---------- SOUND (Web Audio) ---------- */
+/* ---------- SOUND (Web Audio - Enhanced) ---------- */
 let audioCtx = null;
 function playSound(type) {
   if (!state.soundOn) return;
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
+    var o = audioCtx.createOscillator();
+    var g = audioCtx.createGain();
     o.connect(g); g.connect(audioCtx.destination);
-    if (type === 'move') { o.frequency.value = 300; g.gain.value = 0.08; }
-    else if (type === 'capture') { o.frequency.value = 180; g.gain.value = 0.12; }
-    else if (type === 'check') { o.frequency.value = 440; g.gain.value = 0.1; }
+    if (type === 'move') { o.frequency.value = 300; g.gain.value = 0.06; o.type = 'sine'; }
+    else if (type === 'capture') { o.frequency.value = 180; g.gain.value = 0.1; o.type = 'triangle'; vibrate(30); }
+    else if (type === 'check') { o.frequency.value = 520; g.gain.value = 0.08; o.type = 'square'; vibrate([30,30,30]); }
+    else if (type === 'castle') { o.frequency.value = 250; g.gain.value = 0.07; o.type = 'sine'; }
+    else if (type === 'win') { o.frequency.value = 523; g.gain.value = 0.1; o.type = 'sine'; vibrate([50,50,50,50,100]); }
+    else if (type === 'lose') { o.frequency.value = 150; g.gain.value = 0.08; o.type = 'sawtooth'; vibrate(200); }
+    else if (type === 'draw') { o.frequency.value = 220; g.gain.value = 0.06; o.type = 'sine'; }
+    else if (type === 'puzzle-correct') { o.frequency.value = 660; g.gain.value = 0.08; o.type = 'sine'; vibrate(50); }
+    else if (type === 'puzzle-wrong') { o.frequency.value = 130; g.gain.value = 0.1; o.type = 'sawtooth'; vibrate(100); }
     o.start();
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-    o.stop(audioCtx.currentTime + 0.15);
-  } catch {}
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+    o.stop(audioCtx.currentTime + 0.2);
+    // Second note for win/castle (musical)
+    if (type === 'win' || type === 'castle') {
+      setTimeout(function() {
+        var o2 = audioCtx.createOscillator();
+        var g2 = audioCtx.createGain();
+        o2.connect(g2); g2.connect(audioCtx.destination);
+        o2.frequency.value = type === 'win' ? 659 : 300;
+        g2.gain.value = 0.08;
+        o2.type = 'sine';
+        o2.start();
+        g2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        o2.stop(audioCtx.currentTime + 0.2);
+      }, 150);
+    }
+  } catch(e) {}
 }
 
 /* ---------- PWA: Service Worker + Install Prompt ---------- */
 function setupPWA() {
+  // Inline manifest via blob
+  const manifest = {
+    name: "Lion Chess",
+    short_name: "Lion Chess",
+    description: "Play chess vs AI, friends, and solve puzzles",
+    start_url: ".",
+    display: "standalone",
+    orientation: "any",
+    background_color: "#262421",
+    theme_color: "#262421",
+    icons: [
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23262421'/%3E%3Ctext y='.9em' font-size='150' x='20'%3E🦁%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23262421'/%3E%3Ctext y='.9em' font-size='400' x='56'%3E🦁%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+
+  // Register inline service worker for offline support
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      const CACHE = 'lion-chess-v1';
+      self.addEventListener('install', e => {
+        self.skipWaiting();
+        e.waitUntil(caches.open(CACHE).then(c => c.add(location.href.replace('/sw.js',''))).catch(()=>{}));
+      });
+      self.addEventListener('activate', e => self.clients.claim());
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
+            if (resp.ok && e.request.method === 'GET') {
+              const clone = resp.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone)).catch(()=>{});
+            }
+            return resp;
+          }).catch(() => caches.match('/')))
+        );
+      });
+    `;
+    try {
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    } catch(e) {}
+  }
+
   // Install prompt handling
   let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', function(e) {
+  window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    var btn = document.getElementById('installBtn');
+    const btn = document.getElementById('installBtn');
     if (btn) btn.style.display = 'inline-block';
   });
-  window.installPWA = function() {
+  window.installPWA = () => {
     if (!deferredPrompt) {
-      toast('Use browser menu > Add to Home Screen');
+      toast('Use your browser menu → "Add to Home Screen"');
       return;
     }
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function() {
+    deferredPrompt.userChoice.then(() => {
       deferredPrompt = null;
-      var btn = document.getElementById('installBtn');
+      const btn = document.getElementById('installBtn');
       if (btn) btn.style.display = 'none';
       toast('Thanks for installing! 🦁');
     });
   };
-  window.addEventListener('appinstalled', function() {
-    var btn = document.getElementById('installBtn');
+  // Hide install button if already installed
+  window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('installBtn');
     if (btn) btn.style.display = 'none';
-  });
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function() {});
   });
 }
 
